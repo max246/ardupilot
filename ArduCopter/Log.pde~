@@ -777,8 +777,6 @@ static const struct LogStructure log_structure[] PROGMEM = {
       "MOT",  "hhhh",        "Mot1,Mot2,Mot3,Mot4" },
 #endif
 
-    { LOG_SONAR_MSG, sizeof(log_Sonar),       
-      "SON",   "BB",   "Sonar,Pitch" },
     { LOG_OPTFLOW_MSG, sizeof(log_Optflow),       
       "OF",   "hhBccffee",   "Dx,Dy,SQual,X,Y,Lat,Lng,Roll,Pitch" },
     { LOG_NAV_TUNING_MSG, sizeof(log_Nav_Tuning),       
