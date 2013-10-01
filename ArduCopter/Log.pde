@@ -158,7 +158,7 @@ select_logs(uint8_t argc, const Menu::arg *argv)
 struct PACKED log_Sonar {
     LOG_PACKET_HEADER;
     uint16_t sonar_reading;
-    uint16_t pitch_controll;
+    uint16_t graffiti_controll;
 };
 static void Log_Write_Sonar(uint16_t tsonar, uint16_t tpitch)
 {
@@ -166,7 +166,7 @@ static void Log_Write_Sonar(uint16_t tsonar, uint16_t tpitch)
     struct log_Sonar pkt = {
             LOG_PACKET_HEADER_INIT(LOG_SONAR_MSG),
         	sonar_reading        : tsonar,
-        	pitch_controll      : tpitch
+        	graffiti_controll      : tpitch
         };
     
     DataFlash.WriteBlock(&pkt, sizeof(pkt));

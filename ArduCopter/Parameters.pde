@@ -797,6 +797,10 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Range: 0.100 0.140
     // @User: Standard
     GGROUP(pid_optflow_pitch, "OF_PIT_",   AC_PID),
+    
+#if GRAFFITI == ENABLED
+    GGROUP(pid_graffiti_distance,     "GRAFFITI_", AC_PID),
+#endif // GRAFFITI
 
     // PI controller
     //--------------
@@ -919,6 +923,8 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @Units: cm/s
     // @User: Standard
     GGROUP(pi_loiter_lon,   "HLD_LON_", APM_PI),
+    
+    
 
     // variables not in the g class which contain EEPROM saved variables
 

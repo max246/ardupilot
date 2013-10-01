@@ -22,82 +22,25 @@ void userhook_FastLoop()
    //hal.console->print("SONAR READING");
    //hal.console->println(s_sonar_reading);
     
-    
-    /***** DEBUG VALUES 
-    hal.console->println(s_min_far_away);
-    hal.console->println(s_mid_far_away);
-    hal.console->println(s_max_close);
-    hal.console->println(s_mid_close);
-    hal.console->println(s_distance_wall);
-    hal.console->println(s_dz_wall);
-    hal.console->println(s_sonar_reading);
-    */
-    //roll_pitch_mode == ROLL_PITCH_LOITER && 
-    if (g.rc_6.control_in >= 700) {
-        if (s_sonar_reading <= s_mid_close) { //first stage
-              s_stage = 1;
-              //The drone is a very dangerous zone, lets get it away as fast as possible
-              // hal.console->println("first");
-              pitch_control = map(s_sonar_reading,20,s_mid_close,300,300);
-              //hal.console->println(s_mid_close); 
-              // hal.console->println(pitch_control); 
-           
-        } else if (s_sonar_reading > s_mid_close && s_sonar_reading <= s_max_close) { //second stage 
-             
-              //The drone is going too close, lets push it back to the dz
-              //  hal.console->println("second");
-              if (s_stage == 0 || s_stage >= 3) { //kick back if is getting too close
-                 pitch_control = 800;                   
-              } else if (s_stage == 1) { //Kick forward to stop acceleration
-                 pitch_control = -1400;
-              } else {
-                 //pitch_control = map(s_sonar_reading,s_mid_close,s_max_close,500,200);
-                 pitch_control = 0;
-              }
-              s_stage = 2;
-        } else if (s_sonar_reading  > s_max_close && s_sonar_reading <= (s_min_far_away)) { //fifth stage
-              //Everything seems good, so dont touch pitch
-              //hal.console->println("fifth");
-              if (s_stage == 1 || s_stage == 2) {
-                  pitch_control =  -1600;
-                  s_stage = 0; 
-              } else if (s_stage == 4 || s_stage == 5) { //coming from far away
-                  pitch_control =  2600;
-                  s_stage = 0; 
-              } else {
-                  s_stage = 0;
-                  pitch_control = 0;
-              }
-        } else if (s_sonar_reading  > s_min_far_away && s_sonar_reading <= s_mid_far_away) { //thrid stage 
-              //Drone a little bit far from the dz, trying to push back to get in the dz
-              // hal.console->println("third");
-              if (s_stage == 0) {
-                 pitch_control = 1200;
-              } else {
-                 pitch_control = map(s_sonar_reading,s_min_far_away,s_mid_far_away,1000,-50);
-              }
-              s_stage = 3;
-        } else if (s_sonar_reading >  s_mid_far_away) { //foufth stage
-              //Drone too far from the dz pushing very hard to get back
-              // hal.console->println("foufth");
-              s_stage = 4;
-              //pitch_control = map(s_sonar_reading,s_mid_far_away,(s_mid_far_away+s_distance_wall),-300,-400);
-              pitch_control = -50;
-        } else {
-              //hal.console->println("nothing"); 
-              s_stage = 0;
-              pitch_control = 0;
-        }
-        //hal.console->println("MODE ON"); 
+    if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && (g.rc_6.control_in >= 700) && (s_sonar_reading < 200) ) {
+       
+       // Simple Distance ==> Pitch PID Controller        
+       graffiti_distance_error = graffiti_distance_target - s_sonar_reading;                // Should return positive for too close, negative for too far away
+       graffiti_control = g.pid_graffiti_distance.get_pid(graffiti_distance_error, G_Dt);   // Should return positive pitch (nose up) for too close, negative pitch (nose down) for too close
+       graffiti_control = constrain_int16(graffiti_control, -4500, 4500);
+       
     } else {
-        pitch_control=0;
-        s_stage = 0;
+        
+        g.pid_graffiti_distance.reset_I();       // Reset I-term
+        graffiti_control=0;
+
     }
-    Log_Write_Sonar(s_sonar_reading, pitch_control);
+    
+    Log_Write_Sonar(s_sonar_reading, graffiti_control);
     
     //hal.console->println(s_sonar_reading);
     //hal.console->print(";");
-    //hal.console->println(pitch_control);
+    //hal.console->println(graffiti_control);
     //hal.console->println(g.rc_2.control_in);
     
     //current_pitch = g.rc_2.control_in;
