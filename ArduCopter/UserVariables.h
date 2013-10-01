@@ -9,8 +9,9 @@
 //***** SONAR TO TAKE DISTANCE FROM THE WALL! ******
 static AP_HAL::AnalogSource *sonar_wall_analog_source = hal.analogin->channel(1);
 float scaling = 5;
+ModeFilterInt16_Size3 sonar_wall_mode_filter(1);
 static AP_RangeFinder_MaxsonarXL *sonarWall = new AP_RangeFinder_MaxsonarXL(sonar_wall_analog_source,
-            &sonar_mode_filter);
+            &sonar_wall_mode_filter);
 
 static int16_t graffiti_control = 0;
 static int16_t s_sonar_reading = 0;
