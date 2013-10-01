@@ -799,7 +799,8 @@ const AP_Param::Info var_info[] PROGMEM = {
     GGROUP(pid_optflow_pitch, "OF_PIT_",   AC_PID),
     
 #if GRAFFITI == ENABLED
-    GGROUP(pid_graffiti_distance,     "GRAFFITI_", AC_PID),
+    GGROUP(pid_graffiti_rate,     "GRAFFITI_R_", AC_PID),
+    GGROUP(pi_graffiti_distance,  "GRAFFITI_D_", APM_PI),
 #endif // GRAFFITI
 
     // PI controller

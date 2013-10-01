@@ -24,14 +24,21 @@ void userhook_FastLoop()
     
     if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && (g.rc_6.control_in >= 700) && (s_sonar_reading < 200) ) {
        
-       // Simple Distance ==> Pitch PID Controller        
-       graffiti_distance_error = graffiti_distance_target - s_sonar_reading;                // Should return positive for too close, negative for too far away
-       graffiti_control = g.pid_graffiti_distance.get_pid(graffiti_distance_error, G_Dt);   // Should return positive pitch (nose up) for too close, negative pitch (nose down) for too close
-       graffiti_control = constrain_int16(graffiti_control, -4500, 4500);
+        // Distance ==> Rate PID Controller
+        graffiti_distance_error = graffiti_distance_target - s_sonar_reading;               // Should return positive for too close, negative for too far away
+        graffiti_rate_target = g.pi_graffiti_distance.get_p(graffiti_distance_error);       // Should return a target speed, positive away from wall, negative towards wall.
+        graffiti_rate_target = constrain_int32(graffiti_rate_target, -100, 100);            // Constrain target to 100 cm/s  for sanity.
+        
+        // Rate ==> Pitch PID Controller  
+        graffiti_rate_current = (s_sonar_reading - graffiti_distance_last)*100;             // Current speed, in cm/second. Positive away from wall. Negative towards wall.
+        graffiti_rate_error = graffiti_rate_target - graffiti_rate_current;                 // Speed Error, in cm/seconds. Positive away from wall.
+        graffiti_control = g.pid_graffiti_rate.get_pid(graffiti_rate_error, G_Dt);          // Should return positive pitch (nose up) to accelerate away from wall.
+        graffiti_control = constrain_int16(graffiti_control, -1500, 4500);                  // Constrain to reasonable numbers.
        
     } else {
         
-        g.pid_graffiti_distance.reset_I();       // Reset I-term
+        g.pid_graffiti_rate.reset_I();                      // Reset I-term
+        graffiti_distance_last = graffiti_distance_target;  // Reset this to something reasonable. To-Do: we should handle on/off switching better.
         graffiti_control=0;
 
     }

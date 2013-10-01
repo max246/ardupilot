@@ -250,7 +250,8 @@ public:
         k_param_acro_balance_roll,      // scalar (not PID)
         k_param_acro_balance_pitch,     // scalar (not PID)
         k_param_pid_throttle_accel, // 241
-        k_param_pid_graffiti_distance
+        k_param_pid_graffiti_rate,
+        k_param_pi_graffiti_distance
 
         // 254,255: reserved
     };
@@ -399,7 +400,8 @@ public:
     APM_PI                  pi_alt_hold;
 
 #if GRAFFITI == ENABLED
-    AC_PID                  pid_graffiti_distance;
+    AC_PID                  pid_graffiti_rate;
+    APM_PI                  pi_graffiti_distance;
 #endif // GRAFFITI
 
     // Note: keep initializers here in the same order as they are declared

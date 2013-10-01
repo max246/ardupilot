@@ -18,6 +18,10 @@ static int16_t s_sonar_reading = 0;
 static int16_t s_distance_wall = 40; //distance from the wall, in cm
 static int32_t graffiti_distance_target = 75;   // Target distance to the wall, in cm.
 static int32_t graffiti_distance_error = 0;     // Difference between target distance and measured distance, in cm.
+static int32_t graffiti_rate_target = 0;        // The speed we want to approach the wall
+static int32_t graffiti_rate_error = 0;         // The speed error
+static int32_t graffiti_rate_current = 0;       // Current measured speed
+static int32_t graffiti_distance_last = 0;      // Distance we were from the wall last cycle, used to calculate speed.
 
 
 
