@@ -35,7 +35,7 @@ void userhook_FastLoop()
         graffiti_rate_current = (s_sonar_reading - graffiti_distance_last)*100;             // Current speed, in cm/second. Positive away from wall. Negative towards wall.
         graffiti_rate_error = graffiti_rate_target - graffiti_rate_current;                 // Speed Error, in cm/seconds. Positive away from wall.
         graffiti_control = g.pid_graffiti_rate.get_pid(graffiti_rate_error, G_Dt);          // Should return positive pitch (nose up) to accelerate away from wall.
-        graffiti_control = constrain_int16(graffiti_control, -1500, 4500);                  // Constrain to reasonable numbers.
+        graffiti_control = constrain_int16(graffiti_control, -500, 500);                  // Constrain to reasonable numbers.
        
     } else {
         
