@@ -158,9 +158,9 @@ select_logs(uint8_t argc, const Menu::arg *argv)
 struct PACKED log_Sonar {
     LOG_PACKET_HEADER;
     uint16_t sonar_reading;
-    uint16_t graffiti_controll;
+    int16_t graffiti_controll;
 };
-static void Log_Write_Sonar(uint16_t tsonar, uint16_t tpitch)
+static void Log_Write_Sonar(uint16_t tsonar, int16_t tpitch)
 {
 
     struct log_Sonar pkt = {
