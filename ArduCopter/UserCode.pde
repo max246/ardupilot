@@ -7,6 +7,7 @@ void userhook_init()
     // this will be called once at start-up
     //AP_RANGEFINDER_MAXSONARXLL  AP_RANGEFINDER_MAXSONARXL
     sonarWall->calculate_scaler(AP_RANGEFINDER_MAXSONARXLL, 5);
+    sonar_wall_lowpass_filter.set_cutoff_frequency(0.01f, 5.0f);       // Initialize filter with 0.01 second time step (100Hz) and cutoff frequency of 5Hz
 }
 
 int16_t map (int16_t x, int16_t in_min, int16_t in_max, int16_t out_min, int16_t out_max) {
@@ -18,7 +19,8 @@ int16_t map (int16_t x, int16_t in_min, int16_t in_max, int16_t out_min, int16_t
 void userhook_FastLoop()
 {
    //Read Sonar on for the wall
-   s_sonar_reading = sonarWall->read();
+   s_sonar_raw = sonarWall->read();
+   s_sonar_reading = sonar_wall_lowpass_filter.apply(s_sonar_raw);
    //hal.console->print("SONAR READING");
    //hal.console->println(s_sonar_reading);
     
