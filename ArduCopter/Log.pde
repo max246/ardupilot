@@ -166,7 +166,7 @@ static void Log_Write_Sonar(float tsonar, int16_t tpitch)
     struct log_Sonar pkt = {
             LOG_PACKET_HEADER_INIT(LOG_SONAR_MSG),
         	sonar_reading        : tsonar,
-        	graffiti_controll      : tpitch
+        	graffiti_controll    : tpitch
         };
     
     DataFlash.WriteBlock(&pkt, sizeof(pkt));

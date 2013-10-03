@@ -1648,13 +1648,12 @@ void update_roll_pitch_mode(void)
         control_pitch           = g.rc_2.control_in;
         
 #if GRAFFITI == ENABLED
-        
-        control_pitch += graffiti_control;
-        
-#endif // GRAFFITI        
-
+        get_stabilize_roll(control_roll);
+        get_stabilize_pitch(control_pitch + graffiti_control);        
+#else      
         get_stabilize_roll(control_roll);
         get_stabilize_pitch(control_pitch);
+#endif  // GRAFFITI   
 
         break;
 

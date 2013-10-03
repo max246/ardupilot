@@ -14,16 +14,17 @@ static AP_RangeFinder_MaxsonarXL *sonarWall = new AP_RangeFinder_MaxsonarXL(sona
             &sonar_wall_mode_filter);
 static LowPassFilterFloat sonar_wall_lowpass_filter;    // Wall sonar lowpass filter      
 
-static int16_t  graffiti_control = 0;            // Output to pitch control
-static int16_t  s_sonar_raw = 0;                 // Raw sonar reading before filtration 
-static float    s_sonar_reading = 0;             // Usable sonar reading after filtration
-static float    graffiti_distance_last = 0;      // Distance we were from the wall last cycle, used to calculate speed.
-static int16_t  graffiti_distance_target = 75;   // Target distance to the wall, in cm.
-static int16_t  graffiti_distance_error = 0;     // Difference between target distance and measured distance, in cm.
-static int32_t  graffiti_rate_target = 0;        // The speed we want to approach the wall
-static int32_t  graffiti_rate_error = 0;         // The speed error
-static int32_t  graffiti_rate_current = 0;       // Current measured speed
-
+static int16_t  graffiti_control = 0;               // Output to pitch control
+static int16_t  s_sonar_raw = 0;                    // Raw sonar reading before filtration 
+static float    s_sonar_reading = 0;                // Usable sonar reading after filtration
+static float    graffiti_distance_last = 0;         // Distance we were from the wall last cycle, used to calculate speed.
+static int16_t  graffiti_distance_target = 75;      // Target distance to the wall, in cm.
+static int16_t  graffiti_distance_error = 0;        // Difference between target distance and measured distance, in cm.
+static int32_t  graffiti_rate_target = 0;           // The speed we want to approach the wall
+static int32_t  graffiti_rate_error = 0;            // The speed error
+static int32_t  graffiti_rate_current = 0;          // Current measured speed
+static bool     graffiti_control_saturated = false; // for clamping the rate PID integrator when control is saturated
+#define GRAFFITI_MAX_CONTROL 1000                   // Sets maximum output of the controller
 
 
 

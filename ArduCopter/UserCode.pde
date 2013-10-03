@@ -20,39 +20,43 @@ void userhook_FastLoop()
    //Read Sonar on for the wall
    s_sonar_raw = sonarWall->read();
    s_sonar_reading = sonar_wall_lowpass_filter.apply( (float) s_sonar_raw );
-   //hal.console->print("SONAR READING");
-   //hal.console->println(s_sonar_reading);
     
     if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && (g.rc_6.control_in >= 700) && (s_sonar_reading < 200) ) {
        
         // Distance ==> Rate PID Controller
-        graffiti_distance_error = graffiti_distance_target - (int16_t)s_sonar_reading;      // Should return positive for too close, negative for too far away
-        graffiti_rate_target = g.pi_graffiti_distance.get_p(graffiti_distance_error);       // Should return a target speed, positive away from wall, negative towards wall.
-        graffiti_rate_target = constrain_int32(graffiti_rate_target, -100, 100);            // Constrain target to 100 cm/s  for sanity.
+        graffiti_distance_error = graffiti_distance_target - (int16_t)s_sonar_reading;                      // Should return positive for too close, negative for too far away
+        graffiti_rate_target = g.pi_graffiti_distance.get_p(graffiti_distance_error);                       // Should return a target speed, positive away from wall, negative towards wall.
+        graffiti_rate_target = constrain_int32(graffiti_rate_target, -100, 100);                            // Constrain target to 100 cm/s  for sanity.
         
         // Rate ==> Pitch PID Controller  
-        graffiti_rate_current = (float)((s_sonar_reading - graffiti_distance_last)*100.0f); // Current speed, in cm/second. Positive away from wall. Negative towards wall.
-        graffiti_rate_error = graffiti_rate_target - graffiti_rate_current;                 // Speed Error, in cm/seconds. Positive away from wall.
-        graffiti_control = g.pid_graffiti_rate.get_pid(graffiti_rate_error, G_Dt);          // Should return positive pitch (nose up) to accelerate away from wall.
-        graffiti_control = constrain_int16(graffiti_control, -500, 500);                    // Constrain to reasonable numbers.
-        graffiti_distance_last = s_sonar_reading;                                           // Save current distance for next iteration.
+        graffiti_rate_current = (float)((s_sonar_reading - graffiti_distance_last)*100.0f);                 // Current speed, in cm/second. Positive away from wall. Negative towards wall.
+        graffiti_rate_error = graffiti_rate_target - graffiti_rate_current;                                 // Speed Error, in cm/seconds. Positive away from wall.
+        graffiti_control = g.pid_graffiti_rate.get_p(graffiti_rate_error);                                  // Should return positive pitch (nose up) to accelerate away from wall.
+        
+        if (graffiti_control_saturated){                                                                    // If control is saturated
+            graffiti_control += g.pid_graffiti_rate.get_integrator();                                       // Use clamped integrator
+        } else {                                                                                            // Control is not saturated
+            graffiti_control += g.pid_graffiti_rate.get_i(graffiti_rate_error, G_Dt);                       // Use live integrator
+        }
+            
+        if (labs(graffiti_control) > GRAFFITI_MAX_CONTROL){                                                 // Constrain to reasonable numbers.
+            graffiti_control_saturated = true;                                                              // Clamp integrator
+            graffiti_control = constrain_int16(graffiti_control, -GRAFFITI_MAX_CONTROL, GRAFFITI_MAX_CONTROL);  
+        } else {
+            graffiti_control_saturated = false;                                                             // Unclamp integrator
+        }
+        
+        graffiti_distance_last = s_sonar_reading;                                                           // Save current distance for next iteration.
        
     } else {
         
         g.pid_graffiti_rate.reset_I();                      // Reset I-term
+        graffiti_control_saturated = false;                 // Unclamp integrator
         graffiti_distance_last = s_sonar_reading;           // Reset this to something reasonable. To-Do: we should handle on/off switching better.
-        graffiti_control=0;
-
+        graffiti_control=0;        
     }
     
     Log_Write_Sonar(s_sonar_reading, graffiti_control);
-    
-    //hal.console->println(s_sonar_reading);
-    //hal.console->print(";");
-    //hal.console->println(graffiti_control);
-    //hal.console->println(g.rc_2.control_in);
-    
-    //current_pitch = g.rc_2.control_in;
     
 }
 #endif
