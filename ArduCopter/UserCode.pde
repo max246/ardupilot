@@ -32,20 +32,21 @@ void userhook_FastLoop()
         graffiti_rate_current = (float)((s_sonar_reading - graffiti_distance_last)*100.0f);                 // Current speed, in cm/second. Positive away from wall. Negative towards wall.
         graffiti_rate_error = graffiti_rate_target - graffiti_rate_current;                                 // Speed Error, in cm/seconds. Positive away from wall.
         graffiti_control = g.pid_graffiti_rate.get_p(graffiti_rate_error);                                  // Should return positive pitch (nose up) to accelerate away from wall.
+        graffiti_control += g.pid_graffiti_rate.get_d(graffiti_rate_error, G_Dt);
         
         if (graffiti_control_saturated){                                                                    // If control is saturated
             graffiti_control += g.pid_graffiti_rate.get_integrator();                                       // Use clamped integrator
         } else {                                                                                            // Control is not saturated
             graffiti_control += g.pid_graffiti_rate.get_i(graffiti_rate_error, G_Dt);                       // Use live integrator
         }
-            
+        
         if (labs(graffiti_control) > GRAFFITI_MAX_CONTROL){                                                 // Constrain to reasonable numbers.
             graffiti_control_saturated = true;                                                              // Clamp integrator
             graffiti_control = constrain_int16(graffiti_control, -GRAFFITI_MAX_CONTROL, GRAFFITI_MAX_CONTROL);  
         } else {
             graffiti_control_saturated = false;                                                             // Unclamp integrator
         }
-        
+
         graffiti_distance_last = s_sonar_reading;                                                           // Save current distance for next iteration.
        
     } else {
