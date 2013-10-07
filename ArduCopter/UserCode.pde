@@ -46,16 +46,25 @@ void userhook_FastLoop()
         } else {
             graffiti_control_saturated = false;                                                             // Unclamp integrator
         }
-
-        graffiti_distance_last = s_sonar_reading;                                                           // Save current distance for next iteration.
+        
+    } else if ( (roll_pitch_mode == ROLL_PITCH_LOITER) && (g.rc_6.control_in >= 700) && (s_sonar_reading < GRAFFITI_FACE_MAX_RANGE) ) {
+    
+        // Distance ==> Rate PID Controller
+        graffiti_distance_error = graffiti_distance_target - (int16_t)s_sonar_reading;                      // Should return positive for too close, negative for too far away
+        graffiti_rate_target = g.pi_graffiti_distance.get_p(graffiti_distance_error);                       // Should return a target speed, positive away from wall, negative towards wall.
+        graffiti_control = constrain_int32(graffiti_rate_target, -2000, 2000);                              // Constrain target to 100 cm/s  for sanity.
+        
+        g.pid_graffiti_rate.reset_I();                      // Reset I-term
+        graffiti_control_saturated = false;                 // Unclamp integrator
        
     } else {
         
         g.pid_graffiti_rate.reset_I();                      // Reset I-term
         graffiti_control_saturated = false;                 // Unclamp integrator
-        graffiti_distance_last = s_sonar_reading;           // Reset this to something reasonable. To-Do: we should handle on/off switching better.
         graffiti_control=0;        
     }
+    
+    graffiti_distance_last = s_sonar_reading;
     
     Log_Write_Sonar(s_sonar_reading, graffiti_control);
     
