@@ -21,7 +21,7 @@ void userhook_FastLoop()
    s_sonar_raw = sonarWall->read();
    s_sonar_reading = sonar_wall_lowpass_filter.apply( (float) s_sonar_raw );
     
-    if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && (g.rc_6.control_in >= 700) && (s_sonar_reading < 200) ) {
+    if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && (g.rc_6.control_in >= 700) && (s_sonar_reading < GRAFFITI_FACE_MAX_RANGE) ) {
        
         // Distance ==> Rate PID Controller
         graffiti_distance_error = graffiti_distance_target - (int16_t)s_sonar_reading;                      // Should return positive for too close, negative for too far away

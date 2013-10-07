@@ -25,6 +25,7 @@ static int32_t  graffiti_rate_error = 0;            // The speed error
 static int32_t  graffiti_rate_current = 0;          // Current measured speed
 static bool     graffiti_control_saturated = false; // for clamping the rate PID integrator when control is saturated
 #define GRAFFITI_MAX_CONTROL 1000                   // Sets maximum output of the controller
+#define GRAFFITI_FACE_MAX_RANGE 400                 // Sets maximum range for face-wall detection
 
 
 

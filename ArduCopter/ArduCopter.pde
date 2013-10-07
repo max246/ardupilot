@@ -1699,7 +1699,11 @@ void update_roll_pitch_mode(void)
         control_pitch           = g.rc_2.control_in;
 
         // update loiter target from user controls - max velocity is 5.0 m/s
+#if GRAFFITI == ENABLED
+        wp_nav.move_loiter_target(control_roll, control_pitch + graffiti_control,0.01f); 
+#else      
         wp_nav.move_loiter_target(control_roll, control_pitch,0.01f);
+#endif  // GRAFFITI           
 
         // copy latest output from nav controller to stabilize controller
         nav_roll = wp_nav.get_desired_roll();
