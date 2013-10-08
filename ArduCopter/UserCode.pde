@@ -25,7 +25,7 @@ void userhook_FastLoop()
    front_sonar_filtered = front_sonar_lowpass_filter.apply( (float) front_sonar_raw );
    side_sonar_filtered = side_sonar_lowpass_filter.apply( (float) side_sonar_raw );
     
-    if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && (g.rc_6.control_in >= 700) && (front_sonar_filtered < FRONT_SONAR_MAX_RANGE) ) {
+    if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && ap_system.CH7_flag && (front_sonar_filtered < FRONT_SONAR_MAX_RANGE) ) {
        
         // Distance ==> Rate PID Controller
         front_sonar_distance_error = front_sonar_distance_target - (int16_t)front_sonar_filtered;               // Return positive for too close, negative for too far away
@@ -51,7 +51,7 @@ void userhook_FastLoop()
             front_sonar_control_saturated = false;                                                              // Unclamp integrator
         }
         
-    } else if ( (roll_pitch_mode == ROLL_PITCH_LOITER) && (g.rc_6.control_in >= 700) && (front_sonar_filtered < FRONT_SONAR_MAX_RANGE) ) {
+    } else if ( (roll_pitch_mode == ROLL_PITCH_LOITER) && ap_system.CH7_flag && (front_sonar_filtered < FRONT_SONAR_MAX_RANGE) ) {
     
         // Distance ==> Rate PID Controller
         front_sonar_distance_error = front_sonar_distance_target - (int16_t)front_sonar_filtered;               // Return positive for too close, negative for too far away
@@ -70,7 +70,7 @@ void userhook_FastLoop()
     
     front_sonar_distance_last = front_sonar_filtered;
     
-    if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && (g.rc_6.control_in >= 700) && (side_sonar_filtered < SIDE_SONAR_MAX_RANGE) ) {
+    if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && ap_system.CH7_flag && (side_sonar_filtered < SIDE_SONAR_MAX_RANGE) ) {
        
         // Distance ==> Rate PID Controller
         side_sonar_distance_error = side_sonar_distance_target - (int16_t)side_sonar_filtered;                  // Return positive for too close, negative for too far away
@@ -98,7 +98,7 @@ void userhook_FastLoop()
         
         side_sonar_control *= SONAR_SIDE;                                                                       // Flip control direction for right side sonars
                 
-    } else if ( (roll_pitch_mode == ROLL_PITCH_LOITER) && (g.rc_6.control_in >= 700) && (side_sonar_filtered < SIDE_SONAR_MAX_RANGE) ) {
+    } else if ( (roll_pitch_mode == ROLL_PITCH_LOITER) && ap_system.CH7_flag && (side_sonar_filtered < SIDE_SONAR_MAX_RANGE) ) {
     
         // Distance ==> Rate PID Controller
         side_sonar_distance_error = side_sonar_distance_target - (int16_t)side_sonar_filtered;                  // Return positive for too close, negative for too far away
