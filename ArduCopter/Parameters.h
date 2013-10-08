@@ -249,10 +249,11 @@ public:
         k_param_pid_optflow_pitch,
         k_param_acro_balance_roll,      // scalar (not PID)
         k_param_acro_balance_pitch,     // scalar (not PID)
-        k_param_pid_throttle_accel, // 241
+        k_param_pid_throttle_accel,     // 241
         k_param_pid_front_sonar_rate,
-        k_param_pi_front_sonar_distance,
-        k_param_pi_front_sonar_l_dist
+        k_param_pi_sonar_distance,
+        k_param_pi_sonar_l_dist,
+        k_param_pid_side_sonar_rate     // 245
 
         // 254,255: reserved
     };
@@ -402,8 +403,9 @@ public:
 
 #if SONAR_POSITIONING == ENABLED
     AC_PID                  pid_front_sonar_rate;
-    APM_PI                  pi_front_sonar_distance;
-    APM_PI                  pi_front_sonar_l_dist;
+    APM_PI                  pi_sonar_distance;
+    APM_PI                  pi_sonar_l_dist;
+    AC_PID                  pid_side_sonar_rate;
 #endif // SONAR_POSITIONING
 
     // Note: keep initializers here in the same order as they are declared

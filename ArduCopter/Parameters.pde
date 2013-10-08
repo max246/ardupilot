@@ -799,9 +799,10 @@ const AP_Param::Info var_info[] PROGMEM = {
     GGROUP(pid_optflow_pitch, "OF_PIT_",   AC_PID),
     
 #if SONAR_POSITIONING == ENABLED
-    GGROUP(pid_front_sonar_rate,     "POS_SONAR_R_", AC_PID),
-    GGROUP(pi_front_sonar_distance,  "POS_SONAR_D_", APM_PI),
-    GGROUP(pi_front_sonar_l_dist, "POS_SONAR_L_", APM_PI),
+    GGROUP(pid_front_sonar_rate,     "POS_SON_F_RATE_", AC_PID),
+    GGROUP(pi_sonar_distance,  "POS_SONAR_D_", APM_PI),
+    GGROUP(pi_sonar_l_dist, "POS_SONAR_L_", APM_PI),
+    GGROUP(pid_side_sonar_rate,     "POS_SON_S_RATE_", AC_PID),
 #endif // SONAR_POSITIONING
 
     // PI controller
