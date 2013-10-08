@@ -798,10 +798,11 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @User: Standard
     GGROUP(pid_optflow_pitch, "OF_PIT_",   AC_PID),
     
-#if GRAFFITI == ENABLED
-    GGROUP(pid_graffiti_rate,     "GRAFFITI_R_", AC_PID),
-    GGROUP(pi_graffiti_distance,  "GRAFFITI_D_", APM_PI),
-#endif // GRAFFITI
+#if SONAR_POSITIONING == ENABLED
+    GGROUP(pid_front_sonar_rate,     "POS_SONAR_R_", AC_PID),
+    GGROUP(pi_front_sonar_distance,  "POS_SONAR_D_", APM_PI),
+    GGROUP(pi_front_sonar_l_dist, "POS_SONAR_L_", APM_PI),
+#endif // SONAR_POSITIONING
 
     // PI controller
     //--------------

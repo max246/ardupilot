@@ -250,8 +250,9 @@ public:
         k_param_acro_balance_roll,      // scalar (not PID)
         k_param_acro_balance_pitch,     // scalar (not PID)
         k_param_pid_throttle_accel, // 241
-        k_param_pid_graffiti_rate,
-        k_param_pi_graffiti_distance
+        k_param_pid_front_sonar_rate,
+        k_param_pi_front_sonar_distance,
+        k_param_pi_front_sonar_l_dist
 
         // 254,255: reserved
     };
@@ -399,10 +400,11 @@ public:
     APM_PI                  pi_stabilize_yaw;
     APM_PI                  pi_alt_hold;
 
-#if GRAFFITI == ENABLED
-    AC_PID                  pid_graffiti_rate;
-    APM_PI                  pi_graffiti_distance;
-#endif // GRAFFITI
+#if SONAR_POSITIONING == ENABLED
+    AC_PID                  pid_front_sonar_rate;
+    APM_PI                  pi_front_sonar_distance;
+    APM_PI                  pi_front_sonar_l_dist;
+#endif // SONAR_POSITIONING
 
     // Note: keep initializers here in the same order as they are declared
     // above.

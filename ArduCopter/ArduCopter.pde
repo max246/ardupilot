@@ -1647,13 +1647,13 @@ void update_roll_pitch_mode(void)
         control_roll            = g.rc_1.control_in;
         control_pitch           = g.rc_2.control_in;
         
-#if GRAFFITI == ENABLED
+#if SONAR_POSITIONING == ENABLED
         get_stabilize_roll(control_roll);
-        get_stabilize_pitch(control_pitch + graffiti_control);        
+        get_stabilize_pitch(control_pitch + front_sonar_control);        
 #else      
         get_stabilize_roll(control_roll);
         get_stabilize_pitch(control_pitch);
-#endif  // GRAFFITI   
+#endif  // SONAR_POSITIONING   
 
         break;
 
@@ -1699,11 +1699,11 @@ void update_roll_pitch_mode(void)
         control_pitch           = g.rc_2.control_in;
 
         // update loiter target from user controls - max velocity is 5.0 m/s
-#if GRAFFITI == ENABLED
-        wp_nav.move_loiter_target(control_roll, control_pitch + graffiti_control,0.01f); 
+#if SONAR_POSITIONING == ENABLED
+        wp_nav.move_loiter_target(control_roll, control_pitch + front_sonar_control,0.01f); 
 #else      
         wp_nav.move_loiter_target(control_roll, control_pitch,0.01f);
-#endif  // GRAFFITI           
+#endif  // SONAR_POSITIONING           
 
         // copy latest output from nav controller to stabilize controller
         nav_roll = wp_nav.get_desired_roll();

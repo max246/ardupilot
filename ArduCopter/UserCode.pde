@@ -5,8 +5,8 @@ void userhook_init()
 {
     // put your initialisation code here
     // this will be called once at start-up
-    sonarWall->calculate_scaler(AP_RANGEFINDER_MAXSONARXLL, 5);
-    sonar_wall_lowpass_filter.set_cutoff_frequency(0.01f, 2.0f);       // Initialize filter with 0.01 second time step (100Hz) and cutoff frequency of 5Hz
+    FrontSonar->calculate_scaler(AP_RANGEFINDER_MAXSONARXLL, 5);
+    front_sonar_lowpass_filter.set_cutoff_frequency(0.01f, 2.0f);                                               // Initialize filter with 0.01 second time step (100Hz) and cutoff frequency of 5Hz
 }
 
 int16_t map (int16_t x, int16_t in_min, int16_t in_max, int16_t out_min, int16_t out_max) {
@@ -18,55 +18,55 @@ int16_t map (int16_t x, int16_t in_min, int16_t in_max, int16_t out_min, int16_t
 void userhook_FastLoop()
 {
    //Read Sonar on for the wall
-   s_sonar_raw = sonarWall->read();
-   s_sonar_reading = sonar_wall_lowpass_filter.apply( (float) s_sonar_raw );
+   front_sonar_raw = FrontSonar->read();
+   front_sonar_filtered = front_sonar_lowpass_filter.apply( (float) front_sonar_raw );
     
-    if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && (g.rc_6.control_in >= 700) && (s_sonar_reading < GRAFFITI_FACE_MAX_RANGE) ) {
+    if ( (roll_pitch_mode == ROLL_PITCH_STABLE) && (g.rc_6.control_in >= 700) && (front_sonar_filtered < FRONT_SONAR_MAX_RANGE) ) {
        
         // Distance ==> Rate PID Controller
-        graffiti_distance_error = graffiti_distance_target - (int16_t)s_sonar_reading;                      // Should return positive for too close, negative for too far away
-        graffiti_rate_target = g.pi_graffiti_distance.get_p(graffiti_distance_error);                       // Should return a target speed, positive away from wall, negative towards wall.
-        graffiti_rate_target = constrain_int32(graffiti_rate_target, -100, 100);                            // Constrain target to 100 cm/s  for sanity.
+        front_sonar_distance_error = front_sonar_distance_target - (int16_t)front_sonar_filtered;               // Return positive for too close, negative for too far away
+        front_sonar_rate_target = g.pi_front_sonar_distance.get_p(front_sonar_distance_error);                  // Return a target speed, positive away from wall, negative towards wall.
+        front_sonar_rate_target = constrain_int32(front_sonar_rate_target, -100, 100);                          // Constrain target to 100 cm/s  for sanity.
         
         // Rate ==> Pitch PID Controller  
-        graffiti_rate_current = (float)((s_sonar_reading - graffiti_distance_last)*100.0f);                 // Current speed, in cm/second. Positive away from wall. Negative towards wall.
-        graffiti_rate_error = graffiti_rate_target - graffiti_rate_current;                                 // Speed Error, in cm/seconds. Positive away from wall.
-        graffiti_control = g.pid_graffiti_rate.get_p(graffiti_rate_error);                                  // Should return positive pitch (nose up) to accelerate away from wall.
-        graffiti_control += g.pid_graffiti_rate.get_d(graffiti_rate_error, G_Dt);
+        front_sonar_rate_current = (float)((front_sonar_filtered - front_sonar_distance_last)*100.0f);          // Current speed, in cm/second. Positive away from wall. Negative towards wall.
+        front_sonar_rate_error = front_sonar_rate_target - front_sonar_rate_current;                            // Speed Error, in cm/seconds. Positive away from wall.
+        front_sonar_control = g.pid_front_sonar_rate.get_p(front_sonar_rate_error);                             // Return positive pitch (nose up) to accelerate away from wall.
+        front_sonar_control += g.pid_front_sonar_rate.get_d(front_sonar_rate_error, G_Dt);
         
-        if (graffiti_control_saturated){                                                                    // If control is saturated
-            graffiti_control += g.pid_graffiti_rate.get_integrator();                                       // Use clamped integrator
-        } else {                                                                                            // Control is not saturated
-            graffiti_control += g.pid_graffiti_rate.get_i(graffiti_rate_error, G_Dt);                       // Use live integrator
+        if (front_sonar_control_saturated){                                                                     // If control is saturated
+            front_sonar_control += g.pid_front_sonar_rate.get_integrator();                                     // Use clamped integrator
+        } else {                                                                                                // Control is not saturated
+            front_sonar_control += g.pid_front_sonar_rate.get_i(front_sonar_rate_error, G_Dt);                  // Use live integrator
         }
         
-        if (labs(graffiti_control) > GRAFFITI_MAX_CONTROL){                                                 // Constrain to reasonable numbers.
-            graffiti_control_saturated = true;                                                              // Clamp integrator
-            graffiti_control = constrain_int16(graffiti_control, -GRAFFITI_MAX_CONTROL, GRAFFITI_MAX_CONTROL);  
+        if (labs(front_sonar_control) > SONAR_POS_MAX_CONTROL){                                                 // Constrain to reasonable numbers.
+            front_sonar_control_saturated = true;                                                               // Clamp integrator
+            front_sonar_control = constrain_int16(front_sonar_control, -SONAR_POS_MAX_CONTROL, SONAR_POS_MAX_CONTROL);  
         } else {
-            graffiti_control_saturated = false;                                                             // Unclamp integrator
+            front_sonar_control_saturated = false;                                                              // Unclamp integrator
         }
         
-    } else if ( (roll_pitch_mode == ROLL_PITCH_LOITER) && (g.rc_6.control_in >= 700) && (s_sonar_reading < GRAFFITI_FACE_MAX_RANGE) ) {
+    } else if ( (roll_pitch_mode == ROLL_PITCH_LOITER) && (g.rc_6.control_in >= 700) && (front_sonar_filtered < FRONT_SONAR_MAX_RANGE) ) {
     
         // Distance ==> Rate PID Controller
-        graffiti_distance_error = graffiti_distance_target - (int16_t)s_sonar_reading;                      // Should return positive for too close, negative for too far away
-        graffiti_rate_target = g.pi_graffiti_distance.get_p(graffiti_distance_error);                       // Should return a target speed, positive away from wall, negative towards wall.
-        graffiti_control = constrain_int32(graffiti_rate_target, -2000, 2000);                              // Constrain target to 100 cm/s  for sanity.
+        front_sonar_distance_error = front_sonar_distance_target - (int16_t)front_sonar_filtered;               // Return positive for too close, negative for too far away
+        front_sonar_rate_target = g.pi_front_sonar_l_dist.get_p(front_sonar_distance_error);                    // Return a target speed, positive away from wall, negative towards wall.
+        front_sonar_control = constrain_int32(front_sonar_rate_target, -2000, 2000);                            // Constrain target to 100 cm/s  for sanity.
         
-        g.pid_graffiti_rate.reset_I();                      // Reset I-term
-        graffiti_control_saturated = false;                 // Unclamp integrator
+        g.pid_front_sonar_rate.reset_I();                                                                       // Reset I-term
+        front_sonar_control_saturated = false;                                                                  // Unclamp integrator
        
     } else {
         
-        g.pid_graffiti_rate.reset_I();                      // Reset I-term
-        graffiti_control_saturated = false;                 // Unclamp integrator
-        graffiti_control=0;        
+        g.pid_front_sonar_rate.reset_I();                                                                       // Reset I-term
+        front_sonar_control_saturated = false;                                                                  // Unclamp integrator
+        front_sonar_control=0;        
     }
     
-    graffiti_distance_last = s_sonar_reading;
+    front_sonar_distance_last = front_sonar_filtered;
     
-    Log_Write_Sonar(s_sonar_reading, graffiti_control);
+    Log_Write_Sonar(front_sonar_filtered, front_sonar_control);
     
 }
 #endif
