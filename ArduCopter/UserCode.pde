@@ -21,7 +21,7 @@ void userhook_FastLoop()
 {
    //Read Sonar on for the wall
    front_sonar_raw = FrontSonar->read();
-   side_sonar_raw = FrontSonar->read();
+   side_sonar_raw = SideSonar->read();
    front_sonar_filtered = front_sonar_lowpass_filter.apply( (float) front_sonar_raw );
    side_sonar_filtered = side_sonar_lowpass_filter.apply( (float) side_sonar_raw );
     
