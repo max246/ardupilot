@@ -56,7 +56,7 @@ void userhook_FastLoop()
         // Distance ==> Rate PID Controller
         front_sonar_distance_error = front_sonar_distance_target - (int16_t)front_sonar_filtered;               // Return positive for too close, negative for too far away
         front_sonar_rate_target = g.pi_sonar_l_dist.get_p(front_sonar_distance_error);                          // Return a target speed, positive away from wall, negative towards wall.
-        front_sonar_control = constrain_int32(front_sonar_rate_target, -2000, 2000);                            // Constrain target to 200 cm/s  for sanity.
+        front_sonar_control = constrain_int32(front_sonar_rate_target, -4500, 4500);                            // Constrain target to 200 cm/s  for sanity.
         
         g.pid_front_sonar_rate.reset_I();                                                                       // Reset I-term
         front_sonar_control_saturated = false;                                                                  // Unclamp integrator
@@ -103,7 +103,7 @@ void userhook_FastLoop()
         // Distance ==> Rate PID Controller
         side_sonar_distance_error = side_sonar_distance_target - (int16_t)side_sonar_filtered;                  // Return positive for too close, negative for too far away
         side_sonar_rate_target = g.pi_sonar_l_dist.get_p(side_sonar_distance_error);                            // Return a target speed, positive away from wall, negative towards wall.
-        side_sonar_control = constrain_int32(side_sonar_rate_target, -2000, 2000);                              // Constrain target to 200 cm/s  for sanity.
+        side_sonar_control = constrain_int32(side_sonar_rate_target, -4500, 4500);                              // Constrain target to 200 cm/s  for sanity.
         side_sonar_control *= SONAR_SIDE;                                                                       // Flip control direction for right side sonars
         
         g.pid_side_sonar_rate.reset_I();                                                                        // Reset I-term

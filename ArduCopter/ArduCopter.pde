@@ -1700,7 +1700,7 @@ void update_roll_pitch_mode(void)
 
         // update loiter target from user controls - max velocity is 5.0 m/s
 #if SONAR_POSITIONING == ENABLED
-        wp_nav.move_loiter_target(control_roll + side_sonar_control, control_pitch + front_sonar_control,0.01f); 
+        wp_nav.move_loiter_target(constrain_int32(control_roll + side_sonar_control, -4500, 4500), constrain_int32(control_pitch + front_sonar_control, -4500, 4500),0.01f);  
 #else      
         wp_nav.move_loiter_target(control_roll, control_pitch,0.01f);
 #endif  // SONAR_POSITIONING           
