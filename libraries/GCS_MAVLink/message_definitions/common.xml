@@ -669,6 +669,12 @@
                     <param index="6">y</param>
                     <param index="7">z</param>
                </entry>
+               <entry value="210" name="MAV_CMD_GRAFFITI_POISITION">
+                    <description>Graffiti position</description>
+                    <param index="1">bttom</param>
+                    <param index="2">left</param>
+                    <param index="3">spray</param>
+               </entry>
                <entry value="240" name="MAV_CMD_DO_LAST">
                     <description>NOP - This command is only used to mark the upper limit of the DO commands in the enumeration</description>
                     <param index="1">Empty</param>
