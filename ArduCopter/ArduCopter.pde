@@ -885,7 +885,7 @@ static const AP_Scheduler::Task scheduler_tasks[] PROGMEM = {
     { perf_update,        1000,     200 },
     { read_receiver_rssi,   10,      50 },
 #ifdef USERHOOK_FASTLOOP
-    { userhook_50Hz,         1,    100  },
+    { userhook_FastLoop,         1,    100  },
 #endif
 #ifdef USERHOOK_50HZLOOP
     { userhook_50Hz,         2,    100  },
