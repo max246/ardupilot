@@ -264,6 +264,11 @@ public:
         k_param_acro_balance_pitch,
         k_param_acro_yaw_p, // 244
 
+	k_param_pid_front_sonar_rate,
+        k_param_pi_sonar_distance,
+        k_param_pi_sonar_l_dist,
+        k_param_pid_side_sonar_rate     // 248
+
         // 254,255: reserved
     };
 

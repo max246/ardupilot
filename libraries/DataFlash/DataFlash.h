@@ -181,6 +181,8 @@ struct PACKED log_IMU {
 #define LOG_GPS_MSG		  130
 #define LOG_IMU_MSG		  131
 #define LOG_MESSAGE_MSG	  132
+#define LOG_SONAR_MSG  133
+
 
 #include "DataFlash_Block.h"
 #include "DataFlash_File.h"
