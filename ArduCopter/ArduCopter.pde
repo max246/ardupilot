@@ -1646,8 +1646,13 @@ void update_roll_pitch_mode(void)
         get_pilot_desired_lean_angles(g.rc_1.control_in, g.rc_2.control_in, control_roll, control_pitch);
 
         // pass desired roll, pitch to stabilize attitude controllers
+#if SONAR_POSITIONING == ENABLED
+        get_stabilize_roll(control_roll + side_sonar_control);
+        get_stabilize_pitch(control_pitch + front_sonar_control);        
+#else      
         get_stabilize_roll(control_roll);
         get_stabilize_pitch(control_pitch);
+#endif  // SONAR_POSITIONING  
 
         break;
 
@@ -1689,8 +1694,12 @@ void update_roll_pitch_mode(void)
         control_roll            = g.rc_1.control_in;
         control_pitch           = g.rc_2.control_in;
 
-        // update loiter target from user controls
+        // update loiter target from user controls - max velocity is 5.0 m/s
+#if SONAR_POSITIONING == ENABLED
+        wp_nav.move_loiter_target(constrain_int32(control_roll + side_sonar_control, -4500, 4500), constrain_int32(control_pitch + front_sonar_control, -4500, 4500),0.01f);  
+#else      
         wp_nav.move_loiter_target(control_roll, control_pitch,0.01f);
+#endif  // SONAR_POSITIONING     
 
         // copy latest output from nav controller to stabilize controller
         nav_roll = wp_nav.get_desired_roll();

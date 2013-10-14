@@ -153,6 +153,24 @@ select_logs(uint8_t argc, const Menu::arg *argv)
     return(0);
 }
 
+
+struct PACKED log_Sonar {
+    LOG_PACKET_HEADER;
+    float sonar_reading;
+    int16_t graffiti_controll;
+};
+static void Log_Write_Sonar(float tsonar, int16_t tpitch)
+{
+
+    struct log_Sonar pkt = {
+            LOG_PACKET_HEADER_INIT(LOG_SONAR_MSG),
+        	sonar_reading        : tsonar,
+        	graffiti_controll    : tpitch
+        };
+    
+    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+}
+
 static int8_t
 process_logs(uint8_t argc, const Menu::arg *argv)
 {
@@ -782,7 +800,8 @@ static const struct LogStructure log_structure[] PROGMEM = {
     { LOG_MOTORS_MSG, sizeof(log_Motors),       
       "MOT",  "hhhh",        "Mot1,Mot2,Mot3,Mot4" },
 #endif
-
+    { LOG_SONAR_MSG, sizeof(log_Sonar),       
+      "SON",   "BB",   "Sonar,Pitch" },
     { LOG_OPTFLOW_MSG, sizeof(log_Optflow),       
       "OF",   "hhBccffee",   "Dx,Dy,SQual,X,Y,Lat,Lng,Roll,Pitch" },
     { LOG_NAV_TUNING_MSG, sizeof(log_Nav_Tuning),       

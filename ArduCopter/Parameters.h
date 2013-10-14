@@ -407,6 +407,13 @@ public:
     APM_PI                  pi_stabilize_yaw;
     APM_PI                  pi_alt_hold;
 
+#if SONAR_POSITIONING == ENABLED
+    AC_PID                  pid_front_sonar_rate;
+    APM_PI                  pi_sonar_distance;
+    APM_PI                  pi_sonar_l_dist;
+    AC_PID                  pid_side_sonar_rate;
+#endif // SONAR_POSITIONING
+
     // Note: keep initializers here in the same order as they are declared
     // above.
     Parameters() :
