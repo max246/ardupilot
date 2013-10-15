@@ -1186,6 +1186,14 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
             result = MAV_RESULT_ACCEPTED;
             break;
 
+        case MAV_CMD_GRAFFITI_POISITION:
+            /*packet.param1 bottom
+            packet.param2 left
+            packet.param3 spray
+            */
+            result = MAV_RESULT_ACCEPTED;
+            break;
+
         case MAV_CMD_PREFLIGHT_CALIBRATION:
             if (packet.param1 == 1 ||
                 packet.param2 == 1 ||
