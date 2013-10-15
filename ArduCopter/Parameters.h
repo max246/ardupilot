@@ -263,7 +263,10 @@ public:
         k_param_acro_balance_roll,
         k_param_acro_balance_pitch,
         k_param_acro_yaw_p, // 244
-
+        k_param_pid_front_sonar_rate,
+        k_param_pi_sonar_distance,
+        k_param_pi_sonar_l_dist,
+        k_param_pid_side_sonar_rate     // 248
         // 254,255: reserved
     };
 
@@ -406,6 +409,14 @@ public:
     APM_PI                  pi_stabilize_pitch;
     APM_PI                  pi_stabilize_yaw;
     APM_PI                  pi_alt_hold;
+
+#if SONAR_POSITIONING == ENABLED
+    AC_PID                  pid_front_sonar_rate;
+    APM_PI                  pi_sonar_distance;
+    APM_PI                  pi_sonar_l_dist;
+    AC_PID                  pid_side_sonar_rate;
+#endif // SONAR_POSITIONING
+
 
     // Note: keep initializers here in the same order as they are declared
     // above.

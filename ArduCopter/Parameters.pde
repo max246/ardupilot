@@ -804,6 +804,13 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @User: Standard
     GGROUP(pid_optflow_pitch, "OF_PIT_",   AC_PID),
 
+#if SONAR_POSITIONING == ENABLED
+    GGROUP(pid_front_sonar_rate,     "PS_F_RATE_", AC_PID),
+    GGROUP(pi_sonar_distance,  "PS_DIST_", APM_PI),
+    GGROUP(pi_sonar_l_dist, "PS_LOITER_", APM_PI),
+    GGROUP(pid_side_sonar_rate,     "PS_S_RATE_", AC_PID),
+#endif // SONAR_POSITIONING
+
     // PI controller
     //--------------
     // @Param: STB_RLL_P
