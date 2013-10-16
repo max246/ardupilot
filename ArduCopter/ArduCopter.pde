@@ -2286,7 +2286,7 @@ static void tuning(){
         break;
 
     case 54: // Loiter P
-        g.pi_sonar_l_dist.kD(tuning_value);
+        g.pi_sonar_l_dist.kP(tuning_value);
         break;
 
     case 55: // Loiter I
