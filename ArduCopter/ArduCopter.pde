@@ -2265,6 +2265,33 @@ static void tuning(){
         // set sonar gain
         g.sonar_gain.set(tuning_value);
         break;
+
+    case 50: // RATE P  Front and side
+        g.pid_front_sonar_rate.kP(tuning_value);
+        g.pid_side_sonar_rate.kP(tuning_value);
+        break;
+ 
+    case 51: //Rate I Front and side 
+        g.pid_front_sonar_rate.kI(tuning_value);
+        g.pid_side_sonar_rate.kI(tuning_value);
+        break;
+
+    case 52: // Rate D  Front and side
+        g.pid_front_sonar_rate.kD(tuning_value);
+        g.pid_side_sonar_rate.kD(tuning_value);
+        break;
+
+    case 53: // Distance P
+        g.pi_sonar_distance.kP(tuning_value);
+        break;
+
+    case 54: // Loiter P
+        g.pi_sonar_l_dist.kD(tuning_value);
+        break;
+
+    case 55: // Loiter I
+        g.pi_sonar_l_dist.kI(tuning_value);
+        break;
     }
 }
 
