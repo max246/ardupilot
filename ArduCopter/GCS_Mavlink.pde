@@ -1190,6 +1190,21 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
             /*packet.param1 bottom
             packet.param2 left
             packet.param3 spray
+            if (abs(packet.param1) <= 20) {
+                controller_desired_alt += packet.param1;
+            } 
+
+            if (abs(packet.param2) <= 20) {
+                SIDE_SONAR_MAX_RANGE += (packet.param2*10);
+            } 
+            if (packet.param3 == 1) {
+                g.rc_11.servo_out = 4000;
+            } else {
+                g.rc_11.servo_out = -4000;
+            }
+
+
+            
             */
             result = MAV_RESULT_ACCEPTED;
             break;
