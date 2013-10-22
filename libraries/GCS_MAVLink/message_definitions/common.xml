@@ -671,9 +671,16 @@
                </entry>
                <entry value="210" name="MAV_CMD_GRAFFITI_POISITION">
                     <description>Graffiti position</description>
-                    <param index="1">bttom</param>
+                    <param index="1">bottom</param>
                     <param index="2">left</param>
                     <param index="3">spray</param>
+               </entry>
+               <entry value="211" name="MAV_CMD_GRAFFITI">
+                    <description>Graffiti position</description>
+                    <param index="1">front</param>
+                    <param index="2">right</param>
+                    <param index="3">alt</param>
+                    <param index="4">trigger</param>
                </entry>
                <entry value="240" name="MAV_CMD_DO_LAST">
                     <description>NOP - This command is only used to mark the upper limit of the DO commands in the enumeration</description>

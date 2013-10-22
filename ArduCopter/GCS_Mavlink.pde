@@ -1189,13 +1189,13 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
         case MAV_CMD_GRAFFITI_POISITION:
             /*packet.param1 bottom
             packet.param2 left
-            packet.param3 spray
+            packet.param3 spray*/
             if (abs(packet.param1) <= 20) {
                 controller_desired_alt += packet.param1;
             } 
 
             if (abs(packet.param2) <= 20) {
-                SIDE_SONAR_MAX_RANGE += (packet.param2*10);
+                side_sonar_distance_target += (packet.param2*10);
             } 
             if (packet.param3 == 1) {
                 g.rc_11.servo_out = 4000;
@@ -1203,9 +1203,6 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
                 g.rc_11.servo_out = -4000;
             }
 
-
-            
-            */
             result = MAV_RESULT_ACCEPTED;
             break;
 

@@ -41,8 +41,7 @@ static bool     side_sonar_control_saturated = false;           // for clamping 
 #define SONAR_POS_MAX_CONTROL 1000                              // Sets maximum output of the controller
 #define FRONT_SONAR_MAX_RANGE 400                               // Sets maximum range for front wall detection
 
-static float    SIDE_SONAR_MAX_RANGE = 750;                        // Usable sonar reading after filtration
-//#define SIDE_SONAR_MAX_RANGE 750                                // Sets maximum range for side wall detection
+#define SIDE_SONAR_MAX_RANGE 750                                // Sets maximum range for side wall detection
 
 #define LEFT_SIDE 1
 #define RIGHT_SIDE -1

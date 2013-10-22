@@ -114,6 +114,7 @@ void userhook_FastLoop()
     }
     
     side_sonar_distance_last = side_sonar_filtered;
+    gcs_send_message(MSG_GRAFFITI);
 }
 #endif
 
