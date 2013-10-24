@@ -675,13 +675,6 @@
                     <param index="2">left</param>
                     <param index="3">spray</param>
                </entry>
-               <entry value="211" name="MAV_CMD_GRAFFITI">
-                    <description>Graffiti position</description>
-                    <param index="1">front</param>
-                    <param index="2">right</param>
-                    <param index="3">alt</param>
-                    <param index="4">trigger</param>
-               </entry>
                <entry value="240" name="MAV_CMD_DO_LAST">
                     <description>NOP - This command is only used to mark the upper limit of the DO commands in the enumeration</description>
                     <param index="1">Empty</param>
@@ -1796,7 +1789,15 @@
                <field type="float" name="rot_z">Rotational Component in z</field>
           </message>
           <!-- MESSAGE IDs 150 - 240: Space for custom messages in individual projectname_messages.xml files -->
-          <message id="249" name="MEMORY_VECT">
+          <message id="211" name="GRAFFITI">
+               <description>Send raw controller memory. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output.</description>
+               <field type="uint64_t" name="time_usec">Starting address of the debug variables</field>
+               <field type="int32_t" name="front">Version code of the type variable. 0=unknown, type ignored and assumed int16_t. 1=as below</field>
+               <field type="int32_t" name="right">Type code of the memory variables. for ver = 1: 0=16 x int16_t, 1=16 x uint16_t, 2=16 x Q15, 3=16 x 1Q14</field>
+               <field type="int32_t" name="alt">Memory contents at specified address</field>               
+               <field type="int32_t" name="trigger">Memory contents at specified address</field>
+          </message>
+	    <message id="249" name="MEMORY_VECT">
                <description>Send raw controller memory. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output.</description>
                <field type="uint16_t" name="address">Starting address of the debug variables</field>
                <field type="uint8_t" name="ver">Version code of the type variable. 0=unknown, type ignored and assumed int16_t. 1=as below</field>

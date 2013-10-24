@@ -290,6 +290,17 @@ static void NOINLINE send_hwstatus(mavlink_channel_t chan)
         hal.i2c->lockup_count());
 }
 
+static void NOINLINE send_graffiti(mavlink_channel_t chan)
+{
+    mavlink_msg_graffiti_send(
+        chan,
+        100,
+        front_sonar_distance_target,
+        side_sonar_distance_target,
+        controller_desired_alt,
+        g.rc_11.servo_out);
+}
+
 static void NOINLINE send_gps_raw(mavlink_channel_t chan)
 {
     mavlink_msg_gps_raw_int_send(
@@ -555,8 +566,10 @@ static bool mavlink_try_send_message(mavlink_channel_t chan, enum ap_message id,
         break;
 
     case MSG_GPS_RAW:
-        CHECK_PAYLOAD_SIZE(GPS_RAW_INT);
-        send_gps_raw(chan);
+//        CHECK_PAYLOAD_SIZE(GPS_RAW_INT);
+        CHECK_PAYLOAD_SIZE(GRAFFITI);
+        //send_gps_raw(chan);
+        send_graffiti(chan);
         break;
 
     case MSG_SERVO_OUT:

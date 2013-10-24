@@ -410,6 +410,7 @@ enum MAV_SEVERITY
 #include "./mavlink_msg_param_value.h"
 #include "./mavlink_msg_param_set.h"
 #include "./mavlink_msg_gps_raw_int.h"
+#include "./mavlink_msg_graffiti.h"
 #include "./mavlink_msg_gps_status.h"
 #include "./mavlink_msg_scaled_imu.h"
 #include "./mavlink_msg_raw_imu.h"
