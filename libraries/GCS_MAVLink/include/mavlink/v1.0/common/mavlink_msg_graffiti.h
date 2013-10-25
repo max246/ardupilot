@@ -4,16 +4,17 @@
 
 typedef struct __mavlink_graffiti_t
 {
- uint64_t time_usec; ///< Timestamp (microseconds since UNIX epoch or microseconds since system boot)
  int32_t front; ///< frontitude (WGS84), in degrees * 1E7
  int32_t right; ///< rightgitude (WGS84), in degrees * 1E7
  int32_t alt; ///< Altitude (WGS84), in meters * 1000 (positive for up)
  int32_t trigger; ///< Altitude (WGS84), in meters * 1000 (positive for up)
+ int32_t sonar_front; ///< Altitude (WGS84), in meters * 1000 (positive for up)
+ int32_t sonar_side; ///< Altitude (WGS84), in meters * 1000 (positive for up)
  
 } mavlink_graffiti_t;
 
-#define MAVLINK_MSG_ID_GRAFFITI_LEN 22
-#define MAVLINK_MSG_ID_211_LEN 22
+#define MAVLINK_MSG_ID_GRAFFITI_LEN 24
+#define MAVLINK_MSG_ID_211_LEN 24
 
 #define MAVLINK_MSG_ID_GRAFFITI_CRC 168
 #define MAVLINK_MSG_ID_211_CRC 168
@@ -22,12 +23,13 @@ typedef struct __mavlink_graffiti_t
 
 #define MAVLINK_MESSAGE_INFO_GRAFFITI { \
 	"GRAFFITI", \
-	5, \
-	{  { "time_usec", NULL, MAVLINK_TYPE_UINT64_T, 0, 0, offsetof(mavlink_graffiti_t, time_usec) }, \
-         { "front", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_graffiti_t, front) }, \
-         { "right", NULL, MAVLINK_TYPE_INT32_T, 0, 12, offsetof(mavlink_graffiti_t, right) }, \
-         { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 16, offsetof(mavlink_graffiti_t, alt) }, \
-         { "trigger", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_graffiti_t, trigger) }, \
+	6, \
+	{  { "front", NULL, MAVLINK_TYPE_INT32_T, 0, 0, offsetof(mavlink_graffiti_t, front) }, \
+         { "right", NULL, MAVLINK_TYPE_INT32_T, 0, 4, offsetof(mavlink_graffiti_t, right) }, \
+         { "alt", NULL, MAVLINK_TYPE_INT32_T, 0, 8, offsetof(mavlink_graffiti_t, alt) }, \
+         { "trigger", NULL, MAVLINK_TYPE_UINT16_T, 0, 12, offsetof(mavlink_graffiti_t, trigger) }, \
+         { "sonar_front", NULL, MAVLINK_TYPE_UINT16_T, 0, 16, offsetof(mavlink_graffiti_t, sonar_front) }, \
+         { "sonar_side", NULL, MAVLINK_TYPE_UINT16_T, 0, 20, offsetof(mavlink_graffiti_t, sonar_side) }, \
          } \
 }
 
@@ -52,24 +54,26 @@ typedef struct __mavlink_graffiti_t
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_graffiti_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-						       uint64_t time_usec, int32_t front, int32_t right, int32_t alt, int32_t trigger)
+						        int32_t front, int32_t right, int32_t alt, int32_t trigger, int32_t sonar_front, int32_t sonar_side)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
 	char buf[MAVLINK_MSG_ID_GRAFFITI_LEN];
-	_mav_put_uint64_t(buf, 0, time_usec);
-	_mav_put_int32_t(buf, 8, front);
-	_mav_put_int32_t(buf, 12, right);
-	_mav_put_int32_t(buf, 16, alt);
-	_mav_put_int32_t(buf, 20, trigger);
+	_mav_put_int32_t(buf, 0, front);
+	_mav_put_int32_t(buf, 4, right);
+	_mav_put_int32_t(buf, 8, alt);
+	_mav_put_int32_t(buf, 12, trigger);
+	_mav_put_int32_t(buf, 16, sonar_front);
+	_mav_put_int32_t(buf, 20, sonar_side);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GRAFFITI_LEN);
 #else
 	mavlink_graffiti_t packet;
-	packet.time_usec = time_usec;
 	packet.front = front;
 	packet.right = right;
 	packet.alt = alt;
 	packet.trigger = trigger;
+	packet.sonar_front = sonar_front;
+	packet.sonar_side = sonar_side;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GRAFFITI_LEN);
 #endif
@@ -102,24 +106,26 @@ static inline uint16_t mavlink_msg_graffiti_pack(uint8_t system_id, uint8_t comp
  */
 static inline uint16_t mavlink_msg_graffiti_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
 							   mavlink_message_t* msg,
-						           uint64_t time_usec,int32_t front,int32_t right,int32_t alt,int32_t trigger)
+						           int32_t front,int32_t right,int32_t alt,int32_t trigger,int32_t sonar_front,int32_t sonar_side)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
 	char buf[MAVLINK_MSG_ID_GRAFFITI_LEN];
-	_mav_put_uint64_t(buf, 0, time_usec);
-	_mav_put_int32_t(buf, 8, front);
-	_mav_put_int32_t(buf, 12, right);
-	_mav_put_int32_t(buf, 16, alt);
-	_mav_put_uint16_t(buf,20, trigger);
+	_mav_put_int32_t(buf, 0, front);
+	_mav_put_int32_t(buf, 4, right);
+	_mav_put_int32_t(buf, 8, alt);
+	_mav_put_uint16_t(buf,12, trigger);
+	_mav_put_uint16_t(buf,16, sonar_front);
+	_mav_put_uint16_t(buf,20, sonar_side);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_GRAFFITI_LEN);
 #else
 	mavlink_graffiti_t packet;
-	packet.time_usec = time_usec;
 	packet.front = front;
 	packet.right = right;
 	packet.alt = alt;
 	packet.trigger = trigger;
+	packet.sonar_front = sonar_front;
+	packet.sonar_side = sonar_side;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_GRAFFITI_LEN);
 #endif
@@ -142,7 +148,7 @@ static inline uint16_t mavlink_msg_graffiti_pack_chan(uint8_t system_id, uint8_t
  */
 static inline uint16_t mavlink_msg_graffiti_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_graffiti_t* GRAFFITI)
 {
-	return mavlink_msg_graffiti_pack(system_id, component_id, msg, GRAFFITI->time_usec, GRAFFITI->front, GRAFFITI->right, GRAFFITI->alt, GRAFFITI->trigger);
+	return mavlink_msg_graffiti_pack(system_id, component_id, msg, GRAFFITI->front, GRAFFITI->right, GRAFFITI->alt, GRAFFITI->trigger, GRAFFITI->sonar_front, GRAFFITI->sonar_side);
 }
 
 /**
@@ -156,7 +162,7 @@ static inline uint16_t mavlink_msg_graffiti_encode(uint8_t system_id, uint8_t co
  */
 static inline uint16_t mavlink_msg_graffiti_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_graffiti_t* GRAFFITI)
 {
-	return mavlink_msg_graffiti_pack_chan(system_id, component_id, chan, msg, GRAFFITI->time_usec,  GRAFFITI->front, GRAFFITI->right, GRAFFITI->alt, GRAFFITI->trigger);
+	return mavlink_msg_graffiti_pack_chan(system_id, component_id, chan, msg,  GRAFFITI->front, GRAFFITI->right, GRAFFITI->alt, GRAFFITI->trigger, GRAFFITI->sonar_front, GRAFFITI->sonar_side);
 }
 
 /**
@@ -176,15 +182,16 @@ static inline uint16_t mavlink_msg_graffiti_encode_chan(uint8_t system_id, uint8
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_graffiti_send(mavlink_channel_t chan, uint64_t time_usec,  int32_t front, int32_t right, int32_t alt, uint16_t trigger)
+static inline void mavlink_msg_graffiti_send(mavlink_channel_t chan, int32_t front, int32_t right, int32_t alt, int32_t trigger, int32_t sonar_front, int32_t sonar_side)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
 	char buf[MAVLINK_MSG_ID_GRAFFITI_LEN];
-	_mav_put_uint64_t(buf, 0, time_usec);
-	_mav_put_int32_t(buf, 8, front);
-	_mav_put_int32_t(buf, 12, right);
-	_mav_put_int32_t(buf, 16, alt);
-	_mav_put_int32_t(buf, 20, trigger);
+	_mav_put_int32_t(buf, 0, front);
+	_mav_put_int32_t(buf, 4, right);
+	_mav_put_int32_t(buf, 8, alt);
+	_mav_put_int32_t(buf, 12, trigger);
+	_mav_put_int32_t(buf, 16, sonar_front);
+	_mav_put_int32_t(buf, 20, sonar_side);
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GRAFFITI, buf, MAVLINK_MSG_ID_GRAFFITI_LEN, MAVLINK_MSG_ID_GRAFFITI_CRC);
@@ -193,11 +200,12 @@ static inline void mavlink_msg_graffiti_send(mavlink_channel_t chan, uint64_t ti
 #endif
 #else
 	mavlink_graffiti_t packet;
-	packet.time_usec = time_usec;
 	packet.front = front;
 	packet.right = right;
 	packet.alt = alt;
 	packet.trigger = trigger;
+	packet.sonar_front = sonar_front;
+	packet.sonar_side = sonar_side;
 
 #if MAVLINK_CRC_EXTRA
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_GRAFFITI, (const char *)&packet, MAVLINK_MSG_ID_GRAFFITI_LEN, MAVLINK_MSG_ID_GRAFFITI_CRC);
@@ -212,15 +220,7 @@ static inline void mavlink_msg_graffiti_send(mavlink_channel_t chan, uint64_t ti
 // MESSAGE GRAFFITI UNPACKING
 
 
-/**
- * @brief Get field time_usec from GRAFFITI message
- *
- * @return Timestamp (microseconds since UNIX epoch or microseconds since system boot)
- */
-static inline uint64_t mavlink_msg_graffiti_get_time_usec(const mavlink_message_t* msg)
-{
-	return _MAV_RETURN_uint64_t(msg,  0);
-}
+
 
 
 /**
@@ -230,7 +230,7 @@ static inline uint64_t mavlink_msg_graffiti_get_time_usec(const mavlink_message_
  */
 static inline int32_t mavlink_msg_graffiti_get_front(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_int32_t(msg,  8);
+	return _MAV_RETURN_int32_t(msg,  0);
 }
 
 /**
@@ -240,7 +240,7 @@ static inline int32_t mavlink_msg_graffiti_get_front(const mavlink_message_t* ms
  */
 static inline int32_t mavlink_msg_graffiti_get_right(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_int32_t(msg,  12);
+	return _MAV_RETURN_int32_t(msg,  4);
 }
 
 /**
@@ -250,6 +250,26 @@ static inline int32_t mavlink_msg_graffiti_get_right(const mavlink_message_t* ms
  */
 static inline int32_t mavlink_msg_graffiti_get_alt(const mavlink_message_t* msg)
 {
+	return _MAV_RETURN_int32_t(msg,  8);
+}
+
+/**
+ * @brief Get field trigger from GRAFFITI message
+ *
+ * @return GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ */
+static inline int32_t mavlink_msg_graffiti_get_trigger(const mavlink_message_t* msg)
+{
+	return _MAV_RETURN_int32_t(msg,  12);
+}
+
+/**
+ * @brief Get field trigger from GRAFFITI message
+ *
+ * @return GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
+ */
+static inline int32_t mavlink_msg_graffiti_get_sonar_front(const mavlink_message_t* msg)
+{
 	return _MAV_RETURN_int32_t(msg,  16);
 }
 
@@ -258,9 +278,9 @@ static inline int32_t mavlink_msg_graffiti_get_alt(const mavlink_message_t* msg)
  *
  * @return GPS HDOP horizontal dilution of position in cm (m*100). If unknown, set to: UINT16_MAX
  */
-static inline uint16_t mavlink_msg_graffiti_get_trigger(const mavlink_message_t* msg)
+static inline int32_t mavlink_msg_graffiti_get_sonar_side(const mavlink_message_t* msg)
 {
-	return _MAV_RETURN_uint16_t(msg,  20);
+	return _MAV_RETURN_int32_t(msg,  20);
 }
 
 /**
@@ -272,11 +292,12 @@ static inline uint16_t mavlink_msg_graffiti_get_trigger(const mavlink_message_t*
 static inline void mavlink_msg_graffiti_decode(const mavlink_message_t* msg, mavlink_graffiti_t* GRAFFITI)
 {
 #if MAVLINK_NEED_BYTE_SWAP
-	GRAFFITI->time_usec = mavlink_msg_graffiti_get_time_usec(msg);
 	GRAFFITI->front = mavlink_msg_graffiti_get_front(msg);
 	GRAFFITI->right = mavlink_msg_graffiti_get_right(msg);
 	GRAFFITI->alt = mavlink_msg_graffiti_get_alt(msg);
 	GRAFFITI->trigger = mavlink_msg_graffiti_get_trigger(msg);
+	GRAFFITI->sonar_front = mavlink_msg_graffiti_get_sonar_front(msg);
+	GRAFFITI->sonar_side = mavlink_msg_graffiti_get_sonar_side(msg);
 #else
 	memcpy(GRAFFITI, _MAV_PAYLOAD(msg), MAVLINK_MSG_ID_GRAFFITI_LEN);
 #endif

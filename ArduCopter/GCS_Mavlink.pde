@@ -294,11 +294,12 @@ static void NOINLINE send_graffiti(mavlink_channel_t chan)
 {
     mavlink_msg_graffiti_send(
         chan,
-        100,
         front_sonar_distance_target,
         side_sonar_distance_target,
         controller_desired_alt,
-        g.rc_11.servo_out);
+        g.rc_11.servo_out,
+        front_sonar_filtered,
+        side_sonar_filtered);
 }
 
 static void NOINLINE send_gps_raw(mavlink_channel_t chan)
@@ -566,12 +567,15 @@ static bool mavlink_try_send_message(mavlink_channel_t chan, enum ap_message id,
         break;
 
     case MSG_GPS_RAW:
-//        CHECK_PAYLOAD_SIZE(GPS_RAW_INT);
+        CHECK_PAYLOAD_SIZE(GPS_RAW_INT);
+        //CHECK_PAYLOAD_SIZE(GRAFFITI);
+        send_gps_raw(chan);
+        //send_graffiti(chan);
+        break;
+    case MSG_GRAFFITI:
         CHECK_PAYLOAD_SIZE(GRAFFITI);
-        //send_gps_raw(chan);
         send_graffiti(chan);
         break;
-
     case MSG_SERVO_OUT:
 #if HIL_MODE != HIL_MODE_DISABLED
         CHECK_PAYLOAD_SIZE(RC_CHANNELS_SCALED);
