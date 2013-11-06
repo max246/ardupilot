@@ -297,7 +297,7 @@ static void NOINLINE send_graffiti(mavlink_channel_t chan)
         front_sonar_distance_target,
         side_sonar_distance_target,
         controller_desired_alt,
-        hal.rcout->read(11),
+        hal.rcout->read(10),
         front_sonar_filtered,
         side_sonar_filtered);
 }
