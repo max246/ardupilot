@@ -297,7 +297,7 @@ static void NOINLINE send_graffiti(mavlink_channel_t chan)
         front_sonar_distance_target,
         side_sonar_distance_target,
         controller_desired_alt,
-        g.rc_11.servo_out,
+        hal.rcout->read(11),
         front_sonar_filtered,
         side_sonar_filtered);
 }
@@ -1099,19 +1099,20 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
         // decode
         mavlink_request_data_stream_t packet;
         mavlink_msg_request_data_stream_decode(msg, &packet);
-
-        if (mavlink_check_target(packet.target_system, packet.target_component))
-            break;
-
         int16_t freq = 0;                 // packet frequency
-
-        if (packet.start_stop == 0)
-            freq = 0;                     // stop sending
-        else if (packet.start_stop == 1)
-            freq = packet.req_message_rate;                     // start sending
-        else
-            break;
-
+        if (MAVLINK_MSG_ID_COMMAND_LONG != msg->msgid) {
+            if (mavlink_check_target(packet.target_system, packet.target_component))
+                break;
+    
+            
+    
+            if (packet.start_stop == 0)
+                freq = 0;                     // stop sending
+            else if (packet.start_stop == 1)
+                freq = packet.req_message_rate;                     // start sending
+            else
+                break;
+        }
         switch(packet.req_stream_id) {
 
         case MAV_DATA_STREAM_ALL:
@@ -1174,7 +1175,8 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
         // decode
         mavlink_command_long_t packet;
         mavlink_msg_command_long_decode(msg, &packet);
-        if (mavlink_check_target(packet.target_system, packet.target_component)) break;
+        if (MAV_CMD_GRAFFITI_POISITION != packet.command)
+            if (mavlink_check_target(packet.target_system, packet.target_component)) break;
 
         uint8_t result = MAV_RESULT_UNSUPPORTED;
 
@@ -1212,12 +1214,13 @@ void GCS_MAVLINK::handleMessage(mavlink_message_t* msg)
             } 
 
             if (abs(packet.param2) <= 20) {
-                side_sonar_distance_target += (packet.param2*10);
+                side_sonar_distance_target += (packet.param2);
             } 
+            hal.rcout->enable_ch(10);
             if (packet.param3 == 1) {
-                g.rc_11.servo_out = 4000;
+                hal.rcout->write(10,4000);
             } else {
-                g.rc_11.servo_out = -4000;
+                hal.rcout->write(10,1000);
             }
 
             result = MAV_RESULT_ACCEPTED;
